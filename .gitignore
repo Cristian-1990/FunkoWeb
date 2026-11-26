@@ -1,0 +1,40 @@
+# Compilación
+bin/
+obj/
+out/
+
+# IDEs
+.idea/
+.vs/
+.vscode/
+*.sln.iml
+*.DotSettings.user
+
+# Archivos temporales
+*.user
+*.suo
+*.userprefs
+*.log
+*.cache
+*.pdb
+*.tmp
+*.bak
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+artifacts/
+
+# Publicaciones y resultados de tests
+publish/
+TestResults/
+
+# Base de datos local
+*.db
+*.db-shm
+*.db-wal
+
+# Ficheros subidos por los formularios
+**/wwwroot/uploads/*
+!**/wwwroot/uploads/.gitkeep
