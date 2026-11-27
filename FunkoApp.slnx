@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="FunkoApp.Shared/FunkoApp.Shared.csproj" />
+  <Project Path="FunkoApp.Test/FunkoApp.Test.csproj" />
   <Project Path="FunkoApp/FunkoApp.csproj" />
   <Project Path="FunkoAppMvc/FunkoAppMvc.csproj" />
 </Solution>
