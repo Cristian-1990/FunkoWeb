@@ -2,8 +2,6 @@
 @model IndexModel
 @{
     ViewData["Title"] = "Catálogo";
-
-    decimal ConIva(decimal precio) => Math.Round(precio * 1.21m, 2);
 }
 
 <h1 class="mb-4">Catálogo de Funkos</h1>
@@ -30,14 +28,7 @@ else
         @foreach (var funko in Model.Funkos)
         {
             <div class="col">
-                <div class="card h-100">
-                    <img src="@funko.Imagen" class="card-img-top" alt="Foto de @funko.Nombre" />
-                    <div class="card-body">
-                        <h5 class="card-title">@funko.Nombre</h5>
-                        <p class="card-text text-muted">@funko.CategoriaNombre · @funko.Anio</p>
-                        <p class="card-text">@ConIva(funko.PrecioReferencia).ToString("C") (IVA incl.)</p>
-                    </div>
-                </div>
+                <partial name="_TarjetaFunko" model="funko" />
             </div>
         }
     </div>
