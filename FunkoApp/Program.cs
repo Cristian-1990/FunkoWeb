@@ -3,8 +3,8 @@ using FunkoApp.Shared.Infrastructure;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorPages();
 builder.Services
+    .AddRazorPagesWeb()
     .AddDatabase(builder.Configuration)
     .AddServices();
 
@@ -21,6 +21,9 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Sirve los ficheros subidos en ejecución (wwwroot/uploads): MapStaticAssets solo conoce los del build.
+app.UseStaticFiles();
+
 app.UseRouting();
 
 app.UseAuthorization();
@@ -30,3 +33,6 @@ app.MapRazorPages()
    .WithStaticAssets();
 
 app.Run();
+
+// Necesario para los tests de integración con WebApplicationFactory.
+public partial class Program { }

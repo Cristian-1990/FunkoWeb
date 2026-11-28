@@ -1,0 +1,49 @@
+@model FunkoFormViewModel
+@{
+    var categorias = (SelectList)ViewData["Categorias"]!;
+}
+
+@* Parcial del formulario de Funko: lo comparten Crear y Editar.
+   Cada campo usa asp-for, que escribe el atributo name, pinta el valor actual y añade
+   los data-val-* de las DataAnnotations. Las categorías llegan en ViewData["Categorias"],
+   que la página rellena desde la base de datos. *@
+
+<div class="mb-3">
+    <label asp-for="Nombre" class="form-label"></label>
+    <input asp-for="Nombre" class="form-control" />
+    <span asp-validation-for="Nombre" class="text-danger"></span>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="Anio" class="form-label"></label>
+        <input asp-for="Anio" class="form-control" inputmode="numeric" />
+        <span asp-validation-for="Anio" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label asp-for="PrecioReferencia" class="form-label"></label>
+        <input asp-for="PrecioReferencia" class="form-control" inputmode="decimal" />
+        <span asp-validation-for="PrecioReferencia" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="mb-3">
+    <label asp-for="CategoriaId" class="form-label"></label>
+    <select asp-for="CategoriaId" class="form-select" asp-items="categorias">
+        <option value="0">Elige una categoría</option>
+    </select>
+    <span asp-validation-for="CategoriaId" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="ImagenFile" class="form-label"></label>
+    <input asp-for="ImagenFile" class="form-control" accept=".jpg,.jpeg,.png,.gif" />
+    <div class="form-text">Opcional. Si no eliges ninguna se usa la imagen por defecto. JPG, PNG o GIF, hasta 5 MB.</div>
+    <span asp-validation-for="ImagenFile" class="text-danger"></span>
+</div>
+
+<div class="form-check mb-3">
+    <input asp-for="EsNovedad" class="form-check-input" />
+    <label asp-for="EsNovedad" class="form-check-label"></label>
+</div>

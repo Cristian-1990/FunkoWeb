@@ -1,0 +1,33 @@
+@page "{id:long}"
+@model EliminarModel
+@{
+    ViewData["Title"] = "Eliminar Funko";
+}
+
+<h1 class="mb-4">Eliminar Funko</h1>
+
+<div class="alert alert-warning" role="alert">
+    ¿Seguro que quieres eliminar este Funko? Esta acción no se puede deshacer.
+</div>
+
+<div class="card mb-3" style="max-width: 32rem;">
+    <div class="row g-0">
+        <div class="col-4">
+            <img src="@Model.Funko.Imagen" class="img-fluid rounded-start" alt="Foto de @Model.Funko.Nombre" />
+        </div>
+        <div class="col-8">
+            <div class="card-body">
+                <h2 class="h5 card-title">@Model.Funko.Nombre</h2>
+                <p class="card-text mb-1"><strong>Categoría:</strong> @Model.Funko.CategoriaNombre</p>
+                <p class="card-text mb-1"><strong>Año:</strong> @Model.Funko.Anio</p>
+                <p class="card-text mb-0"><strong>Precio de referencia:</strong> @Model.Funko.PrecioReferencia.ToString("C")</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Sin asp-page, el form hace POST a la propia URL (/Eliminar/3): el id viaja en la ruta. *@
+<form method="post">
+    <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+    <a class="btn btn-outline-secondary" asp-page="/Index">Cancelar</a>
+</form>

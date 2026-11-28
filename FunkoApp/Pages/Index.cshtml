@@ -4,7 +4,21 @@
     ViewData["Title"] = "Catálogo";
 }
 
-<h1 class="mb-4">Catálogo de Funkos</h1>
+@* TempData["Exito"] lo deja la página Crear tras el POST; se lee una sola vez. *@
+@if (TempData["Exito"] is string exito)
+{
+    <div class="alert alert-success" role="alert">@exito</div>
+}
+
+@if (TempData["Error"] is string error)
+{
+    <div class="alert alert-danger" role="alert">@error</div>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">Catálogo de Funkos</h1>
+    <a class="btn btn-primary" asp-page="/Crear">Nuevo Funko</a>
+</div>
 
 <form method="get" class="d-flex mb-4">
     <input type="search" name="busqueda" value="@Model.Busqueda" class="form-control me-2" placeholder="Buscar por nombre" />
