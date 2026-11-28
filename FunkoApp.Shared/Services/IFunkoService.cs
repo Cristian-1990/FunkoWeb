@@ -1,4 +1,5 @@
 ﻿using FunkoApp.Shared.Dtos;
+using FunkoApp.Shared.Models;
 
 namespace FunkoApp.Shared.Services;
 
@@ -27,4 +28,9 @@ public interface IFunkoService
     /// <param name="cancellationToken">Token de cancelación.</param>
     /// <returns>Lista de categorías en formato DTO.</returns>
     Task<IReadOnlyList<CategoryDto>> GetCategoriesAsync(CancellationToken cancellationToken = default);
-}
+
+    /// <summary>Crea un Funko nuevo.</summary>
+    /// <param name="funko">Funko a guardar; su Id lo asigna la base de datos.</param>
+    /// <param name="cancellationToken">Token de cancelación.</param>
+    /// <returns>El Funko creado en formato DTO, o null si el nombre ya existe o la categoría no existe.</returns>
+    Task<FunkoDto?> CreateAsync(Funko funko, CancellationToken cancellationToken = default);}

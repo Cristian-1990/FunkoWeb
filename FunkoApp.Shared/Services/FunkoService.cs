@@ -2,6 +2,7 @@
 using FunkoApp.Shared.Data;
 using FunkoApp.Shared.Dtos;
 using FunkoApp.Shared.Mappers;
+using FunkoApp.Shared.Models;
 
 namespace FunkoApp.Shared.Services;
 
@@ -67,4 +68,45 @@ public class FunkoService(FunkoDbContext context, ILogger<FunkoService> logger) 
             .Select(c => new CategoryDto(c.Id, c.Nombre))
             .ToListAsync(cancellationToken);
     }
-}
+
+    /// <inheritdoc />
+    public async Task<FunkoDto?> CreateAsync(Funko funko, CancellationToken cancellationToken = default)
+    {
+        logger.LogDebug("Creando el Funko {Nombre}", funko.Nombre);
+
+        // Comprobación previa: el índice único es la red de seguridad de la base de datos,
+        // pero avisar aquí permite devolver null sin llegar a lanzar la excepción.
+        var yaExiste = await context.Funkos
+            .AnyAsync(f => f.Nombre == funko.Nombre, cancellationToken);
+
+        if (yaExiste)
+        {
+            logger.LogWarning("Ya existe un Funko llamado {Nombre}", funko.Nombre);
+            return null;
+        }
+
+        var categoria = await context.Categories
+            .FirstOrDefaultAsync(c => c.Id == funko.CategoriaId, cancellationToken);
+
+        if (categoria is null)
+        {
+            logger.LogWarning("No existe la categoría {CategoriaId} del Funko {Nombre}", funko.CategoriaId, funko.Nombre);
+            return null;
+        }
+
+        try
+        {
+            funko.Categoria = categoria;
+            context.Funkos.Add(funko);
+            await context.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException)
+        {
+            // Caso de dos peticiones simultáneas con el mismo nombre: gana una, la otra recibe null.
+            logger.LogWarning("No se pudo crear {Nombre}: el nombre ya existe en la base de datos", funko.Nombre);
+            context.Entry(funko).State = EntityState.Detached;
+            return null;
+        }
+
+        return funko.ToDto();
+    }}

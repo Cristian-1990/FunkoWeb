@@ -116,6 +116,24 @@ public class FunkoServiceTests
             categorias.Select(c => c.Nombre).Should().Equal("Marvel", "Tenistas");
         }
         [Test]
+        public async Task CreateAsync_FunkoNuevo_LoGuardaYDevuelveSuDto()
+        {
+            // Arrange
+            var marvelId = _contexto.Categories.First(c => c.Nombre == "Marvel").Id;
+            var nuevo = new Funko { Nombre = "Capitán América", Anio = 2022, PrecioReferencia = 13.00m, CategoriaId = marvelId };
+
+            // Act
+            var creado = await _servicio.CreateAsync(nuevo);
+
+            // Assert
+            creado.Should().NotBeNull();
+            creado!.Id.Should().BeGreaterThan(0);
+            creado.Nombre.Should().Be("Capitán América");
+            creado.CategoriaNombre.Should().Be("Marvel");
+            _contexto.Funkos.Count().Should().Be(4);
+        }
+
+        [Test]
         public async Task GetAllAsync_BusquedaEnMinusculas_EncuentraElNombreIgualmente()
         {
             // Arrange
@@ -166,6 +184,35 @@ public class FunkoServiceTests
 
             // Assert
             funkos.Should().BeEmpty();
+        }
+
+        [Test]
+        public async Task CreateAsync_NombreRepetido_DevuelveNullYNoGuarda()
+        {
+            // Arrange
+            var tenistasId = _contexto.Categories.First(c => c.Nombre == "Tenistas").Id;
+            var repetido = new Funko { Nombre = "Rafael Nadal", Anio = 2023, PrecioReferencia = 20m, CategoriaId = tenistasId };
+
+            // Act
+            var creado = await _servicio.CreateAsync(repetido);
+
+            // Assert
+            creado.Should().BeNull();
+            _contexto.Funkos.Count().Should().Be(3);
+        }
+
+        [Test]
+        public async Task CreateAsync_CategoriaInexistente_DevuelveNullYNoGuarda()
+        {
+            // Arrange
+            var huerfano = new Funko { Nombre = "Sin categoría", Anio = 2023, PrecioReferencia = 20m, CategoriaId = 9999 };
+
+            // Act
+            var creado = await _servicio.CreateAsync(huerfano);
+
+            // Assert
+            creado.Should().BeNull();
+            _contexto.Funkos.Count().Should().Be(3);
         }
 
         [Test]
