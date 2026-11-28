@@ -1,0 +1,20 @@
+@page
+@model CrearModel
+@{
+    ViewData["Title"] = "Nuevo Funko";
+}
+
+<h1 class="mb-4">Nuevo Funko</h1>
+
+@* Errores generales del ModelState (por ejemplo, nombre repetido). Los de cada campo
+   salen junto a su campo, en el parcial. *@
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+@* Un form sin asp-page apunta a la propia página; el Tag Helper añade el token antifalsificación. *@
+<form method="post" style="max-width: 32rem;">
+    <partial name="_FormularioFunko" for="Formulario" />
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a class="btn btn-outline-secondary" asp-page="/Crear">Limpiar</a>
+    <a class="btn btn-link" asp-page="/Index">Volver al catálogo</a>
+</form>
