@@ -33,3 +33,6 @@ app.MapRazorPages()
    .WithStaticAssets();
 
 app.Run();
+
+// Necesario para los tests de integración con WebApplicationFactory.
+public partial class Program { }
