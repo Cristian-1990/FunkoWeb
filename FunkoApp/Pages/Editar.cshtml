@@ -1,0 +1,26 @@
+@page "{id:long}"
+@model EditarModel
+@{
+    ViewData["Title"] = "Editar Funko";
+}
+
+<h1 class="mb-4">Editar Funko</h1>
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+@* Sin asp-page, el form hace POST a la propia URL (/Editar/3): el id viaja en la ruta. *@
+@if (!string.IsNullOrEmpty(Model.ImagenActual))
+{
+    <div class="mb-3">
+        <p class="mb-1">Imagen actual</p>
+        <img src="@Model.ImagenActual" alt="Imagen actual de @Model.Formulario.Nombre" class="img-thumbnail" style="max-width: 10rem;" />
+    </div>
+}
+
+@* enctype="multipart/form-data" es imprescindible: sin él el navegador no envía el fichero. *@
+<form method="post" enctype="multipart/form-data" style="max-width: 32rem;">
+    <partial name="_FormularioFunko" for="Formulario" />
+
+    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    <a class="btn btn-link" asp-page="/Index">Cancelar</a>
+</form>
