@@ -28,7 +28,7 @@ public class FunkoService(FunkoDbContext context, ILogger<FunkoService> logger) 
         if (!string.IsNullOrWhiteSpace(search))
         {
             var texto = search.Trim();
-            consulta = consulta.Where(f => f.Nombre.Contains(texto));
+            consulta = consulta.Where(f => EF.Functions.Like(f.Nombre, $"%{texto}%"));
         }
 
         if (categoryId is not null)

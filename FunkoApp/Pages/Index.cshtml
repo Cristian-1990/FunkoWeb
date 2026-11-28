@@ -1,10 +1,35 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Catálogo";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h1 class="mb-4">Catálogo de Funkos</h1>
+
+<form method="get" class="d-flex mb-4">
+    <input type="search" name="busqueda" value="@Model.Busqueda" class="form-control me-2" placeholder="Buscar por nombre" />
+    <button type="submit" class="btn btn-outline-primary">Buscar</button>
+</form>
+
+@if (Model.Funkos.Count == 0)
+{
+    if (string.IsNullOrWhiteSpace(Model.Busqueda))
+    {
+        <p>No hay Funkos en el catálogo.</p>
+    }
+    else
+    {
+        <p>No hay Funkos que coincidan con «@Model.Busqueda».</p>
+    }
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-3 g-3">
+        @foreach (var funko in Model.Funkos)
+        {
+            <div class="col">
+                <partial name="_TarjetaFunko" model="funko" />
+            </div>
+        }
+    </div>
+}

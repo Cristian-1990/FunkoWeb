@@ -1,0 +1,12 @@
+﻿@model FunkoDto
+@{
+    decimal ConIva(decimal precio) => Math.Round(precio * 1.21m, 2);
+}
+<div class="card h-100">
+    <img src="@Model.Imagen" class="card-img-top" alt="Foto de @Model.Nombre" />
+    <div class="card-body">
+        <h5 class="card-title">@Model.Nombre</h5>
+        <p class="card-text text-muted">@Model.CategoriaNombre · @Model.Anio</p>
+        <p class="card-text">@ConIva(Model.PrecioReferencia).ToString("C") (IVA incl.)</p>
+    </div>
+</div>
