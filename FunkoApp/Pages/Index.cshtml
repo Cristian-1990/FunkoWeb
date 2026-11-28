@@ -1,10 +1,32 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Catálogo";
+
+    decimal ConIva(decimal precio) => Math.Round(precio * 1.21m, 2);
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h1 class="mb-4">Catálogo de Funkos</h1>
+
+@if (Model.Funkos.Count == 0)
+{
+    <p>No hay Funkos en el catálogo.</p>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-3 g-3">
+        @foreach (var funko in Model.Funkos)
+        {
+            <div class="col">
+                <div class="card h-100">
+                    <img src="@funko.Imagen" class="card-img-top" alt="Foto de @funko.Nombre" />
+                    <div class="card-body">
+                        <h5 class="card-title">@funko.Nombre</h5>
+                        <p class="card-text text-muted">@funko.CategoriaNombre · @funko.Anio</p>
+                        <p class="card-text">@ConIva(funko.PrecioReferencia).ToString("C") (IVA incl.)</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
