@@ -1,0 +1,25 @@
+﻿@page "{id:long}"
+@model CategoriaModel
+@{
+    ViewData["Title"] = Model.Categoria.Nombre;
+}
+
+<h1 class="mb-4">@Model.Categoria.Nombre</h1>
+
+@if (Model.Funkos.Count == 0)
+{
+    <p>No hay Funkos en esta categoría.</p>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-3 g-3">
+        @foreach (var funko in Model.Funkos)
+        {
+            <div class="col">
+                <partial name="_TarjetaFunko" model="funko" />
+            </div>
+        }
+    </div>
+}
+
+<a asp-page="/Index" class="btn btn-outline-secondary mt-4">Volver al catálogo</a>
