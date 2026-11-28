@@ -115,6 +115,17 @@ public class FunkoServiceTests
             // Assert
             categorias.Select(c => c.Nombre).Should().Equal("Marvel", "Tenistas");
         }
+        [Test]
+        public async Task GetAllAsync_BusquedaEnMinusculas_EncuentraElNombreIgualmente()
+        {
+            // Arrange
+
+            // Act
+            var funkos = await _servicio.GetAllAsync(search: "rafael");
+
+            // Assert
+            funkos.Should().ContainSingle().Which.Nombre.Should().Be("Rafael Nadal");
+        }
     }
 
     [TestFixture]
