@@ -9,4 +9,8 @@
         <p class="card-text text-muted">@Model.CategoriaNombre · @Model.Anio</p>
         <p class="card-text">@ConIva(Model.PrecioReferencia).ToString("C") (IVA incl.)</p>
     </div>
+    <div class="card-footer d-flex gap-2">
+        <a class="btn btn-sm btn-outline-primary" asp-page="/Editar" asp-route-id="@Model.Id">Editar</a>
+        <a class="btn btn-sm btn-outline-danger" asp-page="/Eliminar" asp-route-id="@Model.Id">Eliminar</a>
+    </div>
 </div>
