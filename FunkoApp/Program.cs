@@ -1,9 +1,15 @@
+using FunkoApp.Shared.Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services
+    .AddDatabase(builder.Configuration)
+    .AddServices();
 
 var app = builder.Build();
+await app.InitializeDatabaseAsync(app.Environment.IsDevelopment());
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
