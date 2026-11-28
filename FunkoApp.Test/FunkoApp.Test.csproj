@@ -27,6 +27,5 @@
     <ItemGroup>
         <ProjectReference Include="..\FunkoApp.Shared\FunkoApp.Shared.csproj" />
         <ProjectReference Include="..\FunkoApp\FunkoApp.csproj" />
-        <ProjectReference Include="..\FunkoAppMvc\FunkoAppMvc.csproj" />
     </ItemGroup>
 </Project>
