@@ -109,4 +109,82 @@ public class FunkoService(FunkoDbContext context, ILogger<FunkoService> logger) 
         }
 
         return funko.ToDto();
+    }
+    /// <inheritdoc />
+    public async Task<FunkoDto?> UpdateAsync(long id, Funko funko, CancellationToken cancellationToken = default)
+    {
+        logger.LogDebug("Actualizando el Funko {Id}", id);
+
+        var existente = await context.Funkos
+            .FirstOrDefaultAsync(f => f.Id == id, cancellationToken);
+
+        if (existente is null)
+        {
+            logger.LogWarning("No existe el Funko {Id} que se quería actualizar", id);
+            return null;
+        }
+
+        // Otro Funko distinto no puede llamarse igual; el mismo Funko sí puede conservar su nombre.
+        var nombreEnUso = await context.Funkos
+            .AnyAsync(f => f.Nombre == funko.Nombre && f.Id != id, cancellationToken);
+
+        if (nombreEnUso)
+        {
+            logger.LogWarning("Ya existe otro Funko llamado {Nombre}", funko.Nombre);
+            return null;
+        }
+
+        var categoria = await context.Categories
+            .FirstOrDefaultAsync(c => c.Id == funko.CategoriaId, cancellationToken);
+
+        if (categoria is null)
+        {
+            logger.LogWarning("No existe la categoría {CategoriaId} del Funko {Id}", funko.CategoriaId, id);
+            return null;
+        }
+
+        // El Id no se toca: manda el de la ruta. La imagen solo cambia si llega una nueva.
+        existente.Nombre = funko.Nombre;
+        existente.Anio = funko.Anio;
+        existente.PrecioReferencia = funko.PrecioReferencia;
+        existente.EsNovedad = funko.EsNovedad;
+        existente.Categoria = categoria;
+
+        if (funko.Imagen is not null)
+        {
+            existente.Imagen = funko.Imagen;
+        }
+
+        try
+        {
+            await context.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException)
+        {
+            // Caso de dos peticiones simultáneas con el mismo nombre: gana una, la otra recibe null.
+            logger.LogWarning("No se pudo actualizar el Funko {Id}: el nombre ya existe en la base de datos", id);
+            context.Entry(existente).State = EntityState.Detached;
+            return null;
+        }
+
+        return existente.ToDto();
+    }
+
+    /// <inheritdoc />
+    public async Task<bool> DeleteAsync(long id, CancellationToken cancellationToken = default)
+    {
+        logger.LogDebug("Eliminando el Funko {Id}", id);
+
+        var existente = await context.Funkos
+            .FirstOrDefaultAsync(f => f.Id == id, cancellationToken);
+
+        if (existente is null)
+        {
+            logger.LogWarning("No existe el Funko {Id} que se quería eliminar", id);
+            return false;
+        }
+
+        context.Funkos.Remove(existente);
+        await context.SaveChangesAsync(cancellationToken);
+        return true;
     }}
