@@ -21,6 +21,9 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Sirve los ficheros subidos en ejecución (wwwroot/uploads): MapStaticAssets solo conoce los del build.
+app.UseStaticFiles();
+
 app.UseRouting();
 
 app.UseAuthorization();
