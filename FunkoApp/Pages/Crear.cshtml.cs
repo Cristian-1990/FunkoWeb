@@ -1,6 +1,7 @@
 using FunkoApp.Shared.Dtos;
-using FunkoApp.Shared.Models;
+using FunkoApp.Shared.Mappers;
 using FunkoApp.Shared.Services;
+using FunkoApp.Shared.Services.Storage;
 using FunkoApp.Shared.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -14,7 +15,8 @@ namespace FunkoApp.Pages;
 /// con el aviso de éxito en TempData; si no, vuelve a pintar el formulario con sus errores.
 /// </summary>
 /// <param name="service">Servicio del catálogo.</param>
-public class CrearModel(IFunkoService service) : PageModel
+/// <param name="storage">Almacenamiento de las imágenes subidas.</param>
+public class CrearModel(IFunkoService service, IStorageService storage) : PageModel
 {
     /// <summary>Datos del formulario; la vista los pinta con asp-for.</summary>
     [BindProperty]
@@ -43,10 +45,31 @@ public class CrearModel(IFunkoService service) : PageModel
             return Page();
         }
 
-        var creado = await service.CreateAsync(ToEntity(Formulario), cancellationToken);
+        var funko = Formulario.ToEntity();
+        string? rutaNueva = null;
+
+        if (Formulario.ImagenFile is not null)
+        {
+            var guardado = await storage.SaveFileAsync(Formulario.ImagenFile, StorageFolders.Funkos);
+
+            if (!guardado.Ok)
+            {
+                ModelState.AddModelError($"{nameof(Formulario)}.{nameof(Formulario.ImagenFile)}", guardado.Mensaje);
+                await CargarCategoriasAsync(cancellationToken);
+                return Page();
+            }
+
+            rutaNueva = guardado.Ruta;
+            funko.Imagen = rutaNueva;
+        }
+
+        var creado = await service.CreateAsync(funko, cancellationToken);
 
         if (creado is null)
         {
+            // El Funko no se guardó: la imagen recién subida quedaría huérfana, así que se borra.
+            storage.DeleteFile(rutaNueva);
+
             // El servicio devuelve null si el nombre ya existe o la categoría no existe.
             ModelState.AddModelError(string.Empty, "No se ha podido crear el Funko: ya existe uno con ese nombre o la categoría no es válida.");
             await CargarCategoriasAsync(cancellationToken);
@@ -62,18 +85,4 @@ public class CrearModel(IFunkoService service) : PageModel
         var categorias = await service.GetCategoriesAsync(cancellationToken);
         ViewData["Categorias"] = new SelectList(categorias, nameof(CategoryDto.Id), nameof(CategoryDto.Nombre));
     }
-
-    /// <summary>
-    /// Pasa del formulario a la entidad que guarda el servicio.
-    /// </summary>
-    /// <param name="formulario">Formulario ya validado.</param>
-    /// <returns>Entidad lista para guardar.</returns>
-    private static Funko ToEntity(FunkoFormViewModel formulario) => new()
-    {
-        Nombre = formulario.Nombre.Trim(),
-        Anio = formulario.Anio,
-        PrecioReferencia = formulario.PrecioReferencia,
-        CategoriaId = formulario.CategoriaId,
-        EsNovedad = formulario.EsNovedad
-    };
 }

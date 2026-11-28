@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace FunkoApp.Shared.ViewModels;
 
@@ -36,4 +37,11 @@ public class FunkoFormViewModel
     /// <summary>Indica si el Funko se muestra como novedad.</summary>
     [Display(Name = "Novedad")]
     public bool EsNovedad { get; set; }
+
+    /// <summary>
+    /// Imagen opcional subida en el formulario multipart. No lleva atributos de validación:
+    /// el tipo, el tamaño y el contenido los decide el servicio de almacenamiento.
+    /// </summary>
+    [Display(Name = "Imagen")]
+    public IFormFile? ImagenFile { get; set; }
 }
